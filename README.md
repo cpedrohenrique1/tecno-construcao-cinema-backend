@@ -1,0 +1,1 @@
+# Back-end para o projeto do cinema feito em React.
