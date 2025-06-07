@@ -1,4 +1,4 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateFilmeDto } from './dto/create-filme.dto';
 import { UpdateFilmeDto } from './dto/update-filme.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -16,24 +16,60 @@ export class FilmeService {
     if (filmeAlreadyExists) {
       throw new ConflictException('Filme já cadastrado');
     }
-    return await this.prismaService.filme.create({
+    await this.prismaService.filme.create({
       data: createFilmeDto
     });
+    return createFilmeDto;
   }
 
   async findAll() {
     return await this.prismaService.filme.findMany();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} filme`;
+  async findOne(id: number) {
+    const filme = await this.prismaService.filme.findUnique({
+      where: {
+        id: id
+      }
+    });
+    if (!filme) {
+      throw new NotFoundException('Filme não encontrado');
+    }
+    return filme;
   }
 
-  update(id: number, updateFilmeDto: UpdateFilmeDto) {
-    return `This action updates a #${id} filme`;
+  async update(id: number, updateFilmeDto: UpdateFilmeDto) {
+    const filme = await this.prismaService.filme.findUnique({
+      where: {
+        id: id
+      }
+    });
+    if (!filme) {
+      throw new NotFoundException('Filme não encontrado');
+    }
+    return await this.prismaService.filme.update({
+      where: {
+        id: id
+      },
+      data: updateFilmeDto
+    }).catch(error => {
+      throw new ConflictException("Filme já cadastrado com este título");
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} filme`;
+  async remove(id: number) {
+    const filme = await this.prismaService.filme.findUnique({
+      where: {
+        id: id
+      }
+    });
+    if (!filme) {
+      throw new NotFoundException('Filme não encontrado');
+    }
+    return await this.prismaService.filme.delete({
+      where: {
+        id: id
+      }
+    });
   }
 }
