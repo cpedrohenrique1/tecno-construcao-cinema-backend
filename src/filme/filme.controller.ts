@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { FilmeService } from './filme.service';
 import { CreateFilmeDto } from './dto/create-filme.dto';
@@ -26,17 +27,17 @@ export class FilmeController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.filmeService.findOne(+id);
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.filmeService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateFilmeDto: UpdateFilmeDto) {
-    return this.filmeService.update(+id, updateFilmeDto);
+  update(@Param('id', ParseIntPipe) id: number, @Body() updateFilmeDto: UpdateFilmeDto) {
+    return this.filmeService.update(id, updateFilmeDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.filmeService.remove(+id);
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.filmeService.remove(id);
   }
 }
