@@ -9,7 +9,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class SalasService {
-  constructor(private prismaService: PrismaService) {}
+  constructor(private readonly prismaService: PrismaService) {}
 
   async create(createSalaDto: CreateSalaDto) {
     const salaAlreadyExists = await this.prismaService.sala.findUnique({

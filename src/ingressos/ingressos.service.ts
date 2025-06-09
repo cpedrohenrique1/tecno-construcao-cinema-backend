@@ -5,7 +5,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class IngressosService {
-  constructor (private prismaService: PrismaService) {}
+  constructor (private readonly prismaService: PrismaService) {}
 
   async create(createIngressoDto: CreateIngressoDto) {
     const sessaoExists = await this.prismaService.sessao.findUnique({

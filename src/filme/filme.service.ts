@@ -9,7 +9,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class FilmeService {
-  constructor(private prismaService: PrismaService) {}
+  constructor(private readonly prismaService: PrismaService) {}
 
   async create(createFilmeDto: CreateFilmeDto) {
     const filmeAlreadyExists = await this.prismaService.filme.findUnique({

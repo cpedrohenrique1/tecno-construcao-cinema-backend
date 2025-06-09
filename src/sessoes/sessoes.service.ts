@@ -5,7 +5,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class SessoesService {
-  constructor (private prismaService: PrismaService) {}
+  constructor (private readonly prismaService: PrismaService) {}
 
   async create(createSessoesDto: CreateSessoesDto) {
     const salaExists = await this.prismaService.sala.findUnique({
