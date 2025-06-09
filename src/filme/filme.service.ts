@@ -16,10 +16,9 @@ export class FilmeService {
     if (filmeAlreadyExists) {
       throw new ConflictException('Filme já cadastrado');
     }
-    await this.prismaService.filme.create({
+    return await this.prismaService.filme.create({
       data: createFilmeDto
     });
-    return createFilmeDto;
   }
 
   async findAll() {
