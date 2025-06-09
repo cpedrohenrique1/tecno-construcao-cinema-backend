@@ -1,4 +1,8 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateSalaDto } from './dto/create-sala.dto';
 import { UpdateSalaDto } from './dto/update-sala.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -10,14 +14,14 @@ export class SalasService {
   async create(createSalaDto: CreateSalaDto) {
     const salaAlreadyExists = await this.prismaService.sala.findUnique({
       where: {
-        nome: createSalaDto.nome
-      }
+        nome: createSalaDto.nome,
+      },
     });
     if (salaAlreadyExists) {
       throw new ConflictException('Sala já cadastrada');
     }
     return this.prismaService.sala.create({
-      data: createSalaDto
+      data: createSalaDto,
     });
   }
 
@@ -28,11 +32,11 @@ export class SalasService {
   async findOne(id: number) {
     const sala = await this.prismaService.sala.findUnique({
       where: {
-        id: id
-      }
+        id: id,
+      },
     });
     if (!sala) {
-      throw new NotFoundException("Sala não encontrada");
+      throw new NotFoundException('Sala não encontrada');
     }
     return sala;
   }
@@ -40,33 +44,35 @@ export class SalasService {
   async update(id: number, updateSalaDto: UpdateSalaDto) {
     const salaExists = await this.prismaService.sala.findUnique({
       where: {
-        id: id
-      }
+        id: id,
+      },
     });
     if (!salaExists) {
-      throw new NotFoundException("A sala não foi encontrada, impossível atualizar");
+      throw new NotFoundException(
+        'A sala não foi encontrada, impossível atualizar',
+      );
     }
     return await this.prismaService.sala.update({
       where: {
-        id: id
+        id: id,
       },
-      data: updateSalaDto
+      data: updateSalaDto,
     });
   }
 
   async remove(id: number) {
     const salaExists = await this.prismaService.sala.findUnique({
       where: {
-        id: id
-      }
+        id: id,
+      },
     });
     if (!salaExists) {
-      throw new NotFoundException("A sala não foi encontrada");
+      throw new NotFoundException('A sala não foi encontrada');
     }
     return await this.prismaService.sala.delete({
       where: {
-        id: id
-      }
+        id: id,
+      },
     });
   }
 }

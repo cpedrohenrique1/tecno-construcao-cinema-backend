@@ -1,5 +1,5 @@
 export class CreateSalaDto {
-    nome: string;
-    capacidade: number;
-    tipo: string;
+  nome: string;
+  capacidade: number;
+  tipo: string;
 }
