@@ -42,8 +42,8 @@ model Sessao {
   idioma String
   formato String
 
-  Filme Filme @relation(fields: [filmeId], references: [id])
-  Sala Sala @relation(fields: [salaId], references: [id])
+  Filme Filme @relation(fields: [filmeId], references: [id], onDelete: Cascade)
+  Sala Sala @relation(fields: [salaId], references: [id], onDelete: Cascade)
   ingressos Ingresso[]
 }
 
@@ -55,5 +55,5 @@ model Ingresso {
   formaPagamento String
   dataHoraCompra DateTime
   sessaoId Int
-  sessao Sessao @relation(fields: [sessaoId], references: [id])
+  sessao Sessao @relation(fields: [sessaoId], references: [id], onDelete: Cascade)
 }
