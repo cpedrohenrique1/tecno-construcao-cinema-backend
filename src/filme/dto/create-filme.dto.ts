@@ -12,7 +12,7 @@ export class CreateFilmeDto {
     genero: string,
     classificacao: string,
     duracao: number,
-    dataEstreia: Date
+    dataEstreia: Date,
   ) {
     this.titulo = titulo;
     this.descricao = descricao;

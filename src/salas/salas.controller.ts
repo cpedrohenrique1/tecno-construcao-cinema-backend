@@ -32,7 +32,10 @@ export class SalasController {
   }
 
   @Patch(':id')
-  update(@Param('id', ParseIntPipe) id: number, @Body() updateSalaDto: UpdateSalaDto) {
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateSalaDto: UpdateSalaDto,
+  ) {
     return this.salasService.update(id, updateSalaDto);
   }
 

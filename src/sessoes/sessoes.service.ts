@@ -8,42 +8,44 @@ import { CreateSalaDto } from 'src/salas/dto/create-sala.dto';
 
 @Injectable()
 export class SessoesService {
-  constructor(private readonly prismaService: PrismaService) { }
+  constructor(private readonly prismaService: PrismaService) {}
 
   async create(createSessoesDto: CreateSessoesDto) {
     const salaExists = await this.prismaService.sala.findUnique({
       where: {
-        id: createSessoesDto.salaId
-      }
+        id: createSessoesDto.salaId,
+      },
     });
     if (!salaExists) {
-      throw new NotFoundException("Não foi encontrado esta sala");
+      throw new NotFoundException('Não foi encontrado esta sala');
     }
     const filmeExists = await this.prismaService.filme.findUnique({
       where: {
-        id: createSessoesDto.filmeId
-      }
+        id: createSessoesDto.filmeId,
+      },
     });
     if (!filmeExists) {
-      throw new NotFoundException("Não foi encontrado este filme");
+      throw new NotFoundException('Não foi encontrado este filme');
     }
     return await this.prismaService.sessao.create({
-      data: createSessoesDto
+      data: createSessoesDto,
     });
   }
 
   async findAll() {
     const sessoes = await this.prismaService.sessao.findMany();
     const getSessoesDto: GetSessaoDto[] = await Promise.all(
-      sessoes.map(async value => {
+      sessoes.map(async (value) => {
         const filmeExists = await this.prismaService.filme.findUnique({
-          where: { id: value.filmeId }
+          where: { id: value.filmeId },
         });
         const salaExists = await this.prismaService.sala.findUnique({
-          where: { id: value.salaId }
+          where: { id: value.salaId },
         });
         if (!filmeExists || !salaExists) {
-          throw new NotFoundException("Não foi possível encontrar filme ou sala");
+          throw new NotFoundException(
+            'Não foi possível encontrar filme ou sala',
+          );
         }
         return new GetSessaoDto(
           value.id,
@@ -53,19 +55,19 @@ export class SessoesService {
             filmeExists.genero,
             filmeExists.classificacao,
             filmeExists.duracao,
-            filmeExists.dataEstreia
+            filmeExists.dataEstreia,
           ),
           new CreateSalaDto(
             salaExists.nome,
             salaExists.capacidade,
-            salaExists.tipo
+            salaExists.tipo,
           ),
           value.dataHora,
           value.preco,
           value.idioma,
-          value.formato
+          value.formato,
         );
-      })
+      }),
     );
     return getSessoesDto;
   }
@@ -73,76 +75,81 @@ export class SessoesService {
   async findOne(id: number) {
     const sessaoExists = await this.prismaService.sessao.findUnique({
       where: {
-        id: id
-      }
+        id: id,
+      },
     });
     if (!sessaoExists) {
-      throw new NotFoundException("Sessão não encontrada");
+      throw new NotFoundException('Sessão não encontrada');
     }
     const filmeExists = await this.prismaService.filme.findUnique({
       where: {
-        id: sessaoExists.filmeId
-      }
+        id: sessaoExists.filmeId,
+      },
     });
     if (!filmeExists) {
-      throw new NotFoundException("Filme não encontrado");
+      throw new NotFoundException('Filme não encontrado');
     }
     const salaExists = await this.prismaService.sala.findUnique({
       where: {
-        id: sessaoExists.salaId
-      }
+        id: sessaoExists.salaId,
+      },
     });
     if (!salaExists) {
-      throw new NotFoundException("Sala não encontrada");
+      throw new NotFoundException('Sala não encontrada');
     }
-    const getSessaoDto: GetSessaoDto = new GetSessaoDto(sessaoExists.id, new CreateFilmeDto(
-      filmeExists.titulo,
-      filmeExists.descricao,
-      filmeExists.genero,
-      filmeExists.classificacao,
-      filmeExists.duracao,
-      filmeExists.dataEstreia
-    ), new CreateSalaDto(
-      salaExists.nome,
-      salaExists.capacidade,
-      salaExists.tipo
-    ), sessaoExists.dataHora, 
-    sessaoExists.preco,
-    sessaoExists.idioma, 
-    sessaoExists.formato);
+    const getSessaoDto: GetSessaoDto = new GetSessaoDto(
+      sessaoExists.id,
+      new CreateFilmeDto(
+        filmeExists.titulo,
+        filmeExists.descricao,
+        filmeExists.genero,
+        filmeExists.classificacao,
+        filmeExists.duracao,
+        filmeExists.dataEstreia,
+      ),
+      new CreateSalaDto(
+        salaExists.nome,
+        salaExists.capacidade,
+        salaExists.tipo,
+      ),
+      sessaoExists.dataHora,
+      sessaoExists.preco,
+      sessaoExists.idioma,
+      sessaoExists.formato,
+    );
     return getSessaoDto;
   }
 
   async update(id: number, updateSessoesDto: UpdateSessoesDto) {
     const salaExists = await this.prismaService.sala.findUnique({
       where: {
-        id: updateSessoesDto.salaId
-      }
+        id: updateSessoesDto.salaId,
+      },
     });
     if (!salaExists) {
-      throw new NotFoundException("Não foi encontrado esta sala");
+      throw new NotFoundException('Não foi encontrado esta sala');
     }
     const filmeExists = await this.prismaService.filme.findUnique({
       where: {
-        id: updateSessoesDto.filmeId
-      }
+        id: updateSessoesDto.filmeId,
+      },
     });
     if (!filmeExists) {
-      throw new NotFoundException("Não foi encontrado este filme");
+      throw new NotFoundException('Não foi encontrado este filme');
     }
     return await this.prismaService.sessao.update({
       where: {
-        id: id
+        id: id,
       },
-      data: updateSessoesDto
+      data: updateSessoesDto,
     });
   }
 
   async remove(id: number) {
     return await this.prismaService.sessao.delete({
       where: {
-        id: id
-      }
+        id: id,
+      },
     });
   }
 }

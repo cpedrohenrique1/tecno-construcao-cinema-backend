@@ -32,7 +32,10 @@ export class FilmeController {
   }
 
   @Patch(':id')
-  update(@Param('id', ParseIntPipe) id: number, @Body() updateFilmeDto: UpdateFilmeDto) {
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateFilmeDto: UpdateFilmeDto,
+  ) {
     return this.filmeService.update(id, updateFilmeDto);
   }
 
