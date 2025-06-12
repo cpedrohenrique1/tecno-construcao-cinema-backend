@@ -10,7 +10,7 @@ export class IngressosService {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly sessoesService: SessoesService,
-  ) {}
+  ) { }
 
   async create(createIngressoDto: CreateIngressoDto) {
     const sessaoExists = await this.prismaService.sessao.findUnique({
@@ -19,9 +19,7 @@ export class IngressosService {
       },
     });
     if (!sessaoExists) {
-      throw new NotFoundException(
-        'Sessao não encontrada, não foi possível cadastrar ingresso',
-      );
+      return null;
     }
     return await this.prismaService.ingresso.create({
       data: {
@@ -35,21 +33,22 @@ export class IngressosService {
   async findAll() {
     const response = await this.prismaService.ingresso.findMany();
     if (!response) {
-      throw new NotFoundException('Nenhum ingresso encontrado');
+      return [];
     }
     return Promise.all(
       response.map(async (ingresso) => {
         const sessao = await this.sessoesService.findOne(ingresso.sessaoId);
         if (!sessao) {
-          throw new NotFoundException(
-            'Sessão associada ao ingresso não encontrada',
-          );
+          return [];
         }
         return new GetIngressoDto(
           ingresso.id,
           ingresso.cpfCliente,
+          ingresso.nomeCliente,
           ingresso.formaPagamento,
           sessao,
+          ingresso.preco,
+          ingresso.dataHoraCompra,
         );
       }),
     );
@@ -62,14 +61,17 @@ export class IngressosService {
       },
     });
     if (!response) {
-      throw new NotFoundException('Ingresso não encontrado');
+      return null;
     }
     const sessao = await this.sessoesService.findOne(response.sessaoId);
     return new GetIngressoDto(
       id,
       response.cpfCliente,
+      response.nomeCliente,
       response.formaPagamento,
       sessao,
+      response.preco,
+      response.dataHoraCompra,
     );
   }
 
@@ -80,9 +82,7 @@ export class IngressosService {
       },
     });
     if (!sessaoExists) {
-      throw new NotFoundException(
-        'Sessao não encontrada, não foi possível atualizar ingresso',
-      );
+      return null;
     }
     const ingressoExists = await this.prismaService.ingresso.findMany({
       where: {
@@ -90,9 +90,7 @@ export class IngressosService {
       },
     });
     if (!ingressoExists) {
-      throw new NotFoundException(
-        'Não é possível atualizar um ingresso que não existe',
-      );
+      return null;
     }
     return await this.prismaService.ingresso.update({
       where: {
@@ -109,9 +107,7 @@ export class IngressosService {
       },
     });
     if (!ingressoExists) {
-      throw new NotFoundException(
-        'Não é possível atualizar um ingresso que não existe',
-      );
+      return null;
     }
     return await this.prismaService.ingresso.delete({
       where: {
